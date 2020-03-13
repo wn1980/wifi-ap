@@ -12,8 +12,8 @@ else
 fi
 
 docker run -it --rm \
-  -e INTERFACE=wlan0 \
-  -e SSID=ROS_AP \
+  -e INTERFACE=wlp16s0 \
+  -e SSID=${HOSTNAME}-AP \
   -e WPA_PASSPHRASE=passw0rd \
   -e AP_ADDR=192.168.8.1 \
   -e SUBNET=192.168.8.0 \
