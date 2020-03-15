@@ -11,14 +11,13 @@ else
 	exit 0
 fi
 
-docker run -d -t \
-  -e INTERFACE=wlan0 \
+docker run -it --rm \
+  -e INTERFACE=wlp16s0 \
   -e SSID=${HOSTNAME}-AP \
   -e WPA_PASSPHRASE=passw0rd \
   -e AP_ADDR=192.168.8.1 \
   -e SUBNET=192.168.8.0 \
   --network host \
   --privileged \
-  --restart unless-stopped \
   --name wifi_ap \
   wn1980/wifi-ap${tag}
