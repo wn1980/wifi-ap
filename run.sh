@@ -12,7 +12,7 @@ else
 fi
 
 docker run -it --rm \
-  -e INTERFACE=wlp16s0 \
+  -e INTERFACE=uap0 \
   -e SSID=${HOSTNAME}-AP \
   -e WPA_PASSPHRASE=passw0rd \
   -e AP_ADDR=192.168.8.1 \

@@ -53,68 +53,19 @@ EOF
 
 fi
 
-# Setup interface and restart DHCP service
-ip link set ${INTERFACE} up
-ip addr flush dev ${INTERFACE}
-ip addr add ${AP_ADDR}/24 dev ${INTERFACE}
 
-# NAT settings
-echo "NAT settings ip_dynaddr, ip_forward"
-
-
-for i in ip_dynaddr ip_forward ; do
-  if [ $(cat /proc/sys/net/ipv4/$i) -eq 1 ] ; then
-    echo $i already 1
-  else
-    echo "1" > /proc/sys/net/ipv4/$i
-  fi
-done
-
-cat /proc/sys/net/ipv4/ip_dynaddr
-cat /proc/sys/net/ipv4/ip_forward
-
-if [ "${OUTGOINGS}" ] ; then
-   ints="$(sed 's/,\+/ /g' <<<"${OUTGOINGS}")"
-   for int in ${ints}
-   do
-      echo "Setting iptables for outgoing traffics on ${int}..."
-
-      iptables -t nat -D POSTROUTING -s ${SUBNET}/24 -o ${int} -j MASQUERADE > /dev/null 2>&1 || true
-      iptables -t nat -A POSTROUTING -s ${SUBNET}/24 -o ${int} -j MASQUERADE
-
-      iptables -D FORWARD -i ${int} -o ${INTERFACE} -m state --state RELATED,ESTABLISHED -j ACCEPT > /dev/null 2>&1 || true
-      iptables -A FORWARD -i ${int} -o ${INTERFACE} -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-      iptables -D FORWARD -i ${INTERFACE} -o ${int} -j ACCEPT > /dev/null 2>&1 || true
-      iptables -A FORWARD -i ${INTERFACE} -o ${int} -j ACCEPT
-   done
-else
-   echo "Setting iptables for outgoing traffics on all interfaces..."
-
-   iptables -t nat -D POSTROUTING -s ${SUBNET}/24 -j MASQUERADE > /dev/null 2>&1 || true
-   iptables -t nat -A POSTROUTING -s ${SUBNET}/24 -j MASQUERADE
-
-   iptables -D FORWARD -o ${INTERFACE} -m state --state RELATED,ESTABLISHED -j ACCEPT > /dev/null 2>&1 || true
-   iptables -A FORWARD -o ${INTERFACE} -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-   iptables -D FORWARD -i ${INTERFACE} -j ACCEPT > /dev/null 2>&1 || true
-   iptables -A FORWARD -i ${INTERFACE} -j ACCEPT
-fi
-
-echo "Configuring DHCP server .."
+echo "Configuring DHCP server (dnsmasq) .."
 
 cat > "/etc/dnsmasq.conf" <<EOF
-interface=lo,${INTERFACE}
-no-dhcp-interface=lo,${INTERFACE}
+interface=lo,uap0
+no-dhcp-interface=lo,wlan0
 bind-interfaces
 server=8.8.8.8
-domain-needed
-bogus-priv
-dhcp-range=192.168.8.100,192.168.8.150,12h
+dhcp-range=10.3.141.50,10.3.141.255,12h
 EOF
 
-echo "Starting DHCP server .."
-dnsmasq start
+echo "Starting DHCP server (dnsmasq) .."
+/usr/sbin/dnsmasq start
 
 # Capture external docker signals
 trap 'true' SIGINT
@@ -126,26 +77,4 @@ echo "Starting HostAP daemon ..."
 
 wait $!
 
-echo "Removing iptables rules..."
 
-if [ "${OUTGOINGS}" ] ; then
-   ints="$(sed 's/,\+/ /g' <<<"${OUTGOINGS}")"
-   for int in ${ints}
-   do
-      echo "Removing iptables for outgoing traffics on ${int}..."
-
-      iptables -t nat -D POSTROUTING -s ${SUBNET}/24 -o ${int} -j MASQUERADE > /dev/null 2>&1 || true
-
-      iptables -D FORWARD -i ${int} -o ${INTERFACE} -m state --state RELATED,ESTABLISHED -j ACCEPT > /dev/null 2>&1 || true
-
-      iptables -D FORWARD -i ${INTERFACE} -o ${int} -j ACCEPT > /dev/null 2>&1 || true
-   done
-else
-   echo "Setting iptables for outgoing traffics on all interfaces..."
-
-   iptables -t nat -D POSTROUTING -s ${SUBNET}/24 -j MASQUERADE > /dev/null 2>&1 || true
-
-   iptables -D FORWARD -o ${INTERFACE} -m state --state RELATED,ESTABLISHED -j ACCEPT > /dev/null 2>&1 || true
-
-   iptables -D FORWARD -i ${INTERFACE} -j ACCEPT > /dev/null 2>&1 || true
-fi
