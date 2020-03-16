@@ -11,6 +11,9 @@ else
 	exit 0
 fi
 
+docker build -t wn1980/wifi-ap${tag} . 
+#docker push wn1980/wifi-ap${tag}
+
 docker run -it --rm \
   -e INTERFACE=uap0 \
   -e SSID=${HOSTNAME}-AP \
