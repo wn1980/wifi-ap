@@ -4,8 +4,8 @@ RUN apk update && apk add --no-cache bash hostapd dnsmasq iptables && rm -rf /va
 
 EXPOSE 53/tcp 53/udp
 
-ADD ./interfaces /etc/network/interfaces
+#ADD ./interfaces /etc/network/interfaces
 
 ADD wlanstart.sh /bin/wlanstart.sh
 
-ENTRYPOINT [ "wlanstart.sh" ]
+#ENTRYPOINT [ "wlanstart.sh" ]

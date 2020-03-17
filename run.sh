@@ -11,8 +11,11 @@ else
 	exit 0
 fi
 
+docker build -t wn1980/wifi-ap${tag} . 
+#docker push wn1980/wifi-ap${tag}
+
 docker run -it --rm \
-  -e INTERFACE=uap0 \
+  -e INTERFACE=wlp2s0 \
   -e SSID=${HOSTNAME}-AP \
   -e WPA_PASSPHRASE=passw0rd \
   -e AP_ADDR=192.168.8.1 \
@@ -20,4 +23,4 @@ docker run -it --rm \
   --network host \
   --privileged \
   --name wifi_ap \
-  wn1980/wifi-ap${tag}
+  wn1980/wifi-ap${tag} bash
