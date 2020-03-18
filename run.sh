@@ -16,9 +16,7 @@ docker build -t wn1980/wifi-ap${tag} .
 
 docker run -it --rm \
 	--cap-add=NET_ADMIN \
-	-p 53:53/tcp \
-	-p 53:53/udp \
-	-e INTERFACE=wlp16s0 \
+	-e INTERFACE=wlp2s0 \
 	-e SSID=${HOSTNAME}-AP \
 	-e WPA_PASSPHRASE=passw0rd \
 	-e AP_ADDR=192.168.8.1 \
@@ -27,3 +25,6 @@ docker run -it --rm \
 	--privileged \
 	--name wifi_ap \
 	wn1980/wifi-ap${tag} bash
+
+#	-p 127.0.0.53:53:53/tcp \
+#	-p 127.0.0.53:53:53/udp \

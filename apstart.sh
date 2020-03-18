@@ -19,7 +19,7 @@ cat > "/etc/dnsmasq.conf" <<EOF
 #Set the wifi interface
 interface=${INTERFACE}
 
-listen-address=127.0.0.1
+listen-address=127.0.0.53
 
 #Set the IP range that can be given to clients
 dhcp-range=10.0.0.10,10.0.0.100,8h
@@ -57,12 +57,12 @@ fi
 ifconfig ${INTERFACE} 10.0.0.1 netmask 255.255.255.0
 route add default gw 10.0.0.1
 
-#echo 1 > /proc/sys/net/ipv4/ip_forward
-#iptables --flush
-#iptables --table nat --flush
-#iptables --delete-chain
-#iptables --table nat --delete-chain
-#iptables -P FORWARD ACCEPT
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables --flush
+iptables --table nat --flush
+iptables --delete-chain
+iptables --table nat --delete-chain
+iptables -P FORWARD ACCEPT
 
 dnsmasq -C /etc/dnsmasq.conf
 hostapd /etc/hostapd.conf &
