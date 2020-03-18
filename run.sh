@@ -19,8 +19,9 @@ docker run -it --rm \
 	-e INTERFACE=wlp2s0 \
 	-e SSID=${HOSTNAME}-AP \
 	-e WPA_PASSPHRASE=passw0rd \
-	-e AP_ADDR=192.168.8.1 \
+	-e AP_ADDR=10.0.0.1 \
 	-e SUBNET=192.168.8.0 \
+	-e DHCP_RANGE=10.0.0.10,10.0.0.99,8h \
 	--network host \
 	--privileged \
 	--name wifi_ap \

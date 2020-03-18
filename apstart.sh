@@ -19,19 +19,22 @@ cat > "/etc/dnsmasq.conf" <<EOF
 #Set the wifi interface
 interface=${INTERFACE}
 
-listen-address=127.0.0.53
+#Disable DNS function since we don't need it right now.
+port=0
+
+#listen-address=127.0.0.53
 
 #Set the IP range that can be given to clients
-dhcp-range=10.0.0.10,10.0.0.100,8h
+dhcp-range=${DHCP_RANGE}
 
 #Set the gateway IP address
-dhcp-option=3,10.0.0.1
+dhcp-option=3,${AP_ADDR}
 
 #Set dns server address
-dhcp-option=6,10.0.0.1
+#dhcp-option=6,${AP_ADDR}
 
-#Redirect all requests to 10.0.0.1
-address=/#/10.0.0.1
+#Redirect all requests to ${AP_ADDR}
+#address=/#/${AP_ADDR}
 EOF
 
 echo "Configuring HostAP daemon ..."
@@ -40,8 +43,9 @@ if [ ! -f "/etc/hostapd.conf" ] ; then
     cat > "/etc/hostapd.conf" <<EOF
 interface=${INTERFACE}
 
-#Set network name
+#Set network name and password
 ssid=${SSID}
+wpa_passphrase=${WPA_PASSPHRASE}
 
 #Set channel
 channel=1
@@ -54,8 +58,8 @@ fi
 
 #service network-manager stop
 #airmon-ng check kill
-ifconfig ${INTERFACE} 10.0.0.1 netmask 255.255.255.0
-route add default gw 10.0.0.1
+ifconfig ${INTERFACE} ${AP_ADDR} netmask 255.255.255.0
+#route add default gw ${AP_ADDR}
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables --flush
@@ -66,6 +70,5 @@ iptables -P FORWARD ACCEPT
 
 dnsmasq -C /etc/dnsmasq.conf
 hostapd /etc/hostapd.conf &
-#service apache2 start
 
 wait $!
