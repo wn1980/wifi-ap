@@ -6,6 +6,6 @@ EXPOSE 53/tcp 53/udp
 
 #ADD ./interfaces /etc/network/interfaces
 
-ADD wlanstart.sh /bin/wlanstart.sh
+ADD apstart.sh /bin/apstart.sh
 
-#ENTRYPOINT [ "wlanstart.sh" ]
+#ENTRYPOINT [ "apstart.sh" ]

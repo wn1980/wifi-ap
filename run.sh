@@ -15,12 +15,15 @@ docker build -t wn1980/wifi-ap${tag} .
 #docker push wn1980/wifi-ap${tag}
 
 docker run -it --rm \
-  -e INTERFACE=wlp2s0 \
-  -e SSID=${HOSTNAME}-AP \
-  -e WPA_PASSPHRASE=passw0rd \
-  -e AP_ADDR=192.168.8.1 \
-  -e SUBNET=192.168.8.0 \
-  --network host \
-  --privileged \
-  --name wifi_ap \
-  wn1980/wifi-ap${tag} bash
+	--cap-add=NET_ADMIN \
+	-p 53:53/tcp \
+	-p 53:53/udp \
+	-e INTERFACE=wlp16s0 \
+	-e SSID=${HOSTNAME}-AP \
+	-e WPA_PASSPHRASE=passw0rd \
+	-e AP_ADDR=192.168.8.1 \
+	-e SUBNET=192.168.8.0 \
+	--network host \
+	--privileged \
+	--name wifi_ap \
+	wn1980/wifi-ap${tag} bash
