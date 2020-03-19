@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Check if running in privileged mode
 if [ ! -w "/sys" ] ; then
     echo "[Error] Not running in privileged mode."
@@ -39,13 +38,14 @@ EOF
 
 echo "Configuring HostAP daemon ..."
 
-if [ ! -f "/etc/hostapd.conf" ] ; then
-    cat > "/etc/hostapd.conf" <<EOF
+cat > "/etc/hostapd.conf" <<EOF
 interface=${INTERFACE}
 
 #Set network name and password
 ssid=${SSID}
 wpa_passphrase=${WPA_PASSPHRASE}
+wpa_key_mgmt=WPA-PSK
+wpa=2
 
 #Set channel
 channel=1
@@ -53,8 +53,6 @@ channel=1
 #Set driver
 driver=nl80211
 EOF
-
-fi
 
 #service network-manager stop
 #airmon-ng check kill
