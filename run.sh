@@ -19,6 +19,7 @@ docker run -it --rm \
 	-e SSID=${HOSTNAME}-AP \
 	-e WPA_PASSPHRASE=passw0rd \
 	-e AP_ADDR=10.0.0.1 \
+	-e SUBNET=10.0.0.0 \
 	-e DHCP_RANGE=10.0.0.10,10.0.0.99,8h \
 	--network host \
 	--privileged \
