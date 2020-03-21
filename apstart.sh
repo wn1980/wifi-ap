@@ -6,7 +6,8 @@ if [ ! -w "/sys" ] ; then
     exit 1
 fi
 
-iw phy phy0 interface add uap0 type __ap
+#iw phy phy0 interface add uap0 type __ap
+iw dev $WLAN interface add uap0 type __ap
 INTERFACE=uap0
 
 
@@ -58,7 +59,16 @@ channel=1
 driver=nl80211
 EOF
 
-wpa_supplicant -D nl80211 -i $WLAN -c /etc/wpa_supplicant.conf
+cat > "/etc/network/interfaces" <<EOF
+auto $WLAN
+
+#allow-hotplug $WLAN
+
+iface $WLAN inet dhcp
+wpa-conf /etc/wpa_supplicant.conf
+EOF
+
+
 
 #service network-manager stop
 #airmon-ng check kill
@@ -91,7 +101,14 @@ iptables -t nat -A POSTROUTING -s ${SUBNET}/24 -j MASQUERADE
 
 
 dnsmasq -C /etc/dnsmasq.conf
+
+
+#ifconfig $WLAN up
+#wpa_supplicant -D nl80211 -i $WLAN -c /etc/wpa_supplicant.conf
+#dhcpcd $WLAN
+
 #hostapd -B /etc/hostapd.conf
-#hostapd /etc/hostapd.conf & && wait $!
+hostapd /etc/hostapd.conf & 
+wait $!
 
 

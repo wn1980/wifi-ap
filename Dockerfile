@@ -5,4 +5,4 @@ RUN apk update && apk add --no-cache bash hostapd dnsmasq iptables wpa_supplican
 
 ADD apstart.sh /bin/apstart.sh
 
-ENTRYPOINT [ "apstart.sh" ]
+#ENTRYPOINT [ "apstart.sh" ]
