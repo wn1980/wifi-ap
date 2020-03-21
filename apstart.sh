@@ -6,6 +6,10 @@ if [ ! -w "/sys" ] ; then
     exit 1
 fi
 
+iw phy phy0 interface add uap0 type __ap
+INTERFACE=uap0
+
+
 # Check environment variables
 if [ ! "${INTERFACE}" ] ; then
     echo "[Error] An interface must be specified."
@@ -54,6 +58,8 @@ channel=1
 driver=nl80211
 EOF
 
+wpa_supplicant -D nl80211 -i $WLAN -c /etc/wpa_supplicant.conf
+
 #service network-manager stop
 #airmon-ng check kill
 ifconfig ${INTERFACE} ${AP_ADDR} netmask 255.255.255.0
@@ -82,7 +88,10 @@ cat /proc/sys/net/ipv4/ip_forward
 iptables -t nat -D POSTROUTING -s ${SUBNET}/24 -j MASQUERADE > /dev/null 2>&1 || true
 iptables -t nat -A POSTROUTING -s ${SUBNET}/24 -j MASQUERADE
 
-dnsmasq -C /etc/dnsmasq.conf
-hostapd /etc/hostapd.conf &
 
-wait $!
+
+dnsmasq -C /etc/dnsmasq.conf
+#hostapd -B /etc/hostapd.conf
+#hostapd /etc/hostapd.conf & && wait $!
+
+
