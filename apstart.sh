@@ -29,7 +29,7 @@ port=0
 #listen-address=127.0.0.53
 
 #Set the IP range that can be given to clients
-dhcp-range=${DHCP_RANGE}
+dhcp-range=${SUBNET::-1}10,${SUBNET::-1}99,8h
 
 #Set the gateway IP address
 dhcp-option=3,${AP_ADDR}
@@ -72,7 +72,7 @@ EOF
 
 #service network-manager stop
 #airmon-ng check kill
-ifconfig ${INTERFACE} ${AP_ADDR} netmask 255.255.255.0
+#ifconfig ${INTERFACE} ${AP_ADDR} netmask 255.255.255.0
 #route add default gw ${AP_ADDR}
 
 #echo 1 > /proc/sys/net/ipv4/ip_forward
@@ -98,7 +98,11 @@ cat /proc/sys/net/ipv4/ip_forward
 iptables -t nat -D POSTROUTING -s ${SUBNET}/24 -j MASQUERADE > /dev/null 2>&1 || true
 iptables -t nat -A POSTROUTING -s ${SUBNET}/24 -j MASQUERADE
 
+iptables -D FORWARD -o ${INTERFACE} -m state --state RELATED,ESTABLISHED -j ACCEPT > /dev/null 2>&1 || true
+iptables -A FORWARD -o ${INTERFACE} -m state --state RELATED,ESTABLISHED -j ACCEPT
 
+iptables -D FORWARD -i ${INTERFACE} -j ACCEPT > /dev/null 2>&1 || true
+iptables -A FORWARD -i ${INTERFACE} -j ACCEPT
 
 dnsmasq -C /etc/dnsmasq.conf
 

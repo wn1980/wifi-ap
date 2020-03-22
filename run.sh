@@ -20,12 +20,8 @@ docker run -it --rm \
 	-e WPA_PASSPHRASE=passw0rd \
 	-e AP_ADDR=10.0.0.1 \
 	-e SUBNET=10.0.0.0 \
-	-e DHCP_RANGE=10.0.0.10,10.0.0.99,8h \
 	-v $PWD/wpa_supplicant.conf:/etc/wpa_supplicant.conf \
 	--network host \
 	--privileged \
 	--name wifi_ap \
 	wn1980/wifi-ap${tag} bash
-
-#	-p 127.0.0.53:53:53/tcp \
-#	-p 127.0.0.53:53:53/udp \
