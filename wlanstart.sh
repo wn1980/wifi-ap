@@ -7,6 +7,11 @@ if [ ! -w "/sys" ] ; then
     exit 1
 fi
 
+# Add virtual interface for wifi AP
+#iw dev wlan0 interface add uap0 type __ap
+iw phy phy0 interface add uap0 type __ap
+INTERFACE=uap0
+
 # Check environment variables
 if [ ! "${INTERFACE}" ] ; then
     echo "[Error] An interface must be specified."

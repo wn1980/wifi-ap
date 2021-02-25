@@ -11,8 +11,9 @@ else
 	exit 0
 fi
 
+docker rm wifi_ap -f
+
 docker run -d -t \
-  -e INTERFACE=wlan0 \
   -e SSID=${HOSTNAME}-AP \
   -e WPA_PASSPHRASE=passw0rd \
   -e AP_ADDR=192.168.8.1 \
