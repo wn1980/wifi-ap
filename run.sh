@@ -5,7 +5,7 @@ then
 	tag=
 elif [ $(uname -m) == 'aarch64' ] 
 then 
-	tag=:rpi
+	tag=:arm64
 else
 	echo 'not matched platform!'
 	exit 0
