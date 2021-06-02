@@ -9,7 +9,8 @@ fi
 # Add virtual interface for wifi AP
 #iw dev wlan0 interface add uap0 type __ap
 iw phy phy0 interface add uap0 type __ap
-INTERFACE=uap0
+#INTERFACE=uap0
+INTERFACE=wlan0
 
 # Check environment variables
 if [ ! "${INTERFACE}" ] ; then
