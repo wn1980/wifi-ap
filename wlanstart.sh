@@ -9,21 +9,23 @@ fi
 # Add virtual interface for wifi AP
 #iw dev wlan0 interface add uap0 type __ap
 #iw phy phy0 interface add uap0 type __ap
-iw phy phy0 interface add new0 type station
+iw phy phy0 interface add sta0 type station
 iw phy phy0 interface add uap0 type __ap
+
 sleep 2
 
-ip link set new0 down
+ip link set sta0 down
 ip link set uap0 down
 
-macchanger --mac 00:11:22:33:44:55 new0
+macchanger --mac 00:11:22:33:44:55 sta0
 macchanger --mac 00:11:22:33:44:66 uap0
 
-ip link set new0 up
+ip link set sta0 up
 ip link set uap0 up
 
 #INTERFACE=uap0
-INTERFACE=wlan0
+#INTERFACE=sta0
+INTERFACE=wlp3s0
 
 # Check environment variables
 if [ ! "${INTERFACE}" ] ; then
