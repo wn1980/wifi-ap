@@ -10,8 +10,8 @@ fi
 #iw dev wlan0 interface add uap0 type __ap
 #iw phy phy0 interface add uap0 type __ap
 iw phy phy0 interface add sta0 type station
-#iw phy phy0 interface add uap0 type __ap
-iw phy phy0 interface add uap0 type managed
+iw phy phy0 interface add uap0 type __ap
+#iw phy phy0 interface add uap0 type managed
 
 sleep 2
 
@@ -27,10 +27,10 @@ macchanger -r uap0
 ip link set sta0 up
 ip link set uap0 up
 
-#INTERFACE=uap0
+INTERFACE=uap0
 #INTERFACE=sta0
 #INTERFACE=wlp3s0
-INTERFACE=wlan0
+#INTERFACE=wlan0
 
 # Check environment variables
 if [ ! "${INTERFACE}" ] ; then
